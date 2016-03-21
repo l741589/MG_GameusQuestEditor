@@ -10,5 +10,6 @@
         <Style TargetType="{x:Type TextBlock }">
             <Setter Property="FontFamily" Value="SimHei"/>
         </Style>
+
     </Application.Resources>
 </Application>

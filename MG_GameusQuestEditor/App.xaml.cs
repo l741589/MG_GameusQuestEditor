@@ -18,6 +18,9 @@ namespace MG_GameusQuestEditor {
             base.OnStartup(e);
             if (e.Args.Length > 0) {
                 Path = e.Args[0];
+                if (!String.IsNullOrWhiteSpace(Path) && !Path.EndsWith("/") && !Path.EndsWith("\\")) {
+                    Path += "/";
+                }
             }
         }
     }

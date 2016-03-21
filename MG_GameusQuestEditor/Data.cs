@@ -85,12 +85,25 @@ namespace MG_GameusQuestEditor {
         public String desc { get { return _desc; } set { this._desc = value; _PC("desc"); } }
         private String _desc;
 
-        public ObservableCollection<String> steps { get; set; }
-        public ObservableCollection<Quest> rewards { get; set; }
+        public object[][] steps { get; set; }
+        public object[][] rewards { get; set; }
+
+        public ObservableCollection<Step> _steps { get; set; }
+        public ObservableCollection<Quest> _rewards { get; set; }
+
+        public Quest() {
+
+            _steps = new ObservableCollection<Step>();
+            _rewards = new ObservableCollection<Quest>();
+        }
     }
 
     class Data {
-        public ObservableCollection<String> Category { get; set; }
+        public ObservableCollection<StringWrapper> Category { get; set; }
         public ObservableCollection<Quest> Quests { get; set; }
+        public Data() {
+            Category = new ObservableCollection<StringWrapper>();
+            Quests = new ObservableCollection<Quest>();
+        }
     }
 }
