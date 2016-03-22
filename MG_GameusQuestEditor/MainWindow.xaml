@@ -20,46 +20,43 @@
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
-        <Grid DockPanel.Dock="Left" Margin="0,0,8,0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="1*"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="1*"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <Label Grid.Row="0" Background="#99b4d1" HorizontalContentAlignment="Center" 
-                   VerticalContentAlignment="Center" Foreground="White" 
-                   FontSize="20" Content="Quest" Margin="0,0,0,4"/>
-            <ListBox x:Name="listBox" Grid.Row="1" ItemsSource="{Binding Quests}">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding}" ToolTip="{Binding}" />
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-            <Button Grid.Row="2" Content="Change Value" Margin="0,8"/>
-            <Label Grid.Row="3" Background="#99b4d1" HorizontalContentAlignment="Center" 
-                   VerticalContentAlignment="Center" Foreground="White" 
-                   FontSize="20" Margin="0,0,0,4" Content="Categories"/>
-            <ListBox Grid.Row="4" ItemsSource="{Binding Category}" x:Name="cateList" HorizontalContentAlignment="Stretch"
+        <UniformGrid DockPanel.Dock="Left" Margin="0,0,8,0" Columns="1" Rows="2">
+            <GroupBox Padding="4">
+                <GroupBox.Header>
+                    <TextBlock FontSize="20"><Run Text="Quests"/></TextBlock>
+                </GroupBox.Header>
+                <DockPanel>
+                    <local:TableControler DockPanel.Dock="Right" For="{Binding ElementName=listBox,Mode=OneWay}" ElementType="MG_GameusQuestEditor.Quest"/>
+                <ListBox x:Name="listBox" Grid.Row="1" ItemsSource="{Binding Quests}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                                <TextBlock Text="{Binding DisplayName}" ToolTip="{Binding DisplayName}" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                </DockPanel>
+            </GroupBox>
+            <GroupBox Padding="4">
+                <GroupBox.Header>
+                    <TextBlock FontSize="20"><Run Text="Categories"/></TextBlock>
+                </GroupBox.Header>
+                <DockPanel>
+                    <local:TableControler DockPanel.Dock="Right" For="{Binding ElementName=cateList,Mode=OneWay}" ElementType="MG_GameusQuestEditor.StringWrapper"
+                                          InitArgument="&lt;NewCategory&gt;"/>
+                    <ListBox ItemsSource="{Binding Category}" x:Name="cateList" HorizontalContentAlignment="Stretch"
                      ItemContainerStyle="{StaticResource ListBoxItemStyle}">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Grid MouseDown="cateItemDblClick">
-                            <TextBlock Text="{Binding String}" ToolTip="{Binding String}"/>
-                            <TextBox Text="{Binding String}" FontSize="10" Visibility="Hidden" Name="cateEdit" LostFocus="cateEdit_LostFocus"/>
-                        </Grid>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-            <UniformGrid Grid.Row="5" Columns="3" Rows="0">
-                <Button Margin="0,8,4,0" Name="addCate" Click="addCate_Click">Add</Button>
-                <Button Margin="4,8,4,0">Edit</Button>
-                <Button Margin="4,8,0,0" Name="removeCate" Click="removeCate_Click">Remove</Button>
-            </UniformGrid>
-        </Grid>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid MouseDown="cateItemDblClick">
+                                    <TextBlock Text="{Binding String}" ToolTip="{Binding String}"/>
+                                    <TextBox Text="{Binding String}" FontSize="10" Visibility="Hidden" Name="cateEdit" LostFocus="cateEdit_LostFocus"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </DockPanel>                
+            </GroupBox>
+        </UniformGrid>
         <UniformGrid  Columns="1"  Rows="3" Grid.Column="1" DataContext="{Binding SelectedValue, ElementName=listBox, Mode=OneWay}" >
             <GroupBox Padding="4">
                 <GroupBox.Header>
@@ -103,7 +100,7 @@
                     <local:TableControler DockPanel.Dock="Right" For="{Binding ElementName=gv_steps, Mode=OneWay}" 
                                           ElementType="MG_GameusQuestEditor.Step"/>
                     <DataGrid HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" RowHeaderWidth="0" 
-                              ItemsSource="{Binding _steps}" x:Name="gv_steps"/>
+                              ItemsSource="{Binding _steps}" x:Name="gv_steps" HorizontalGridLinesBrush="Gray" VerticalGridLinesBrush="Gray"/>
                 </DockPanel>
             </GroupBox>
             <GroupBox Padding="4">
@@ -113,11 +110,10 @@
                 <DockPanel>
                     <local:TableControler For="{Binding ElementName=gv_reward, Mode=OneWay}" DockPanel.Dock="Right"  
                                         ElementType="MG_GameusQuestEditor.Reward"/>
-                    <DataGrid ItemsSource="{Binding _rewards}" HorizontalScrollBarVisibility="Auto" 
-                          VerticalScrollBarVisibility="Auto" x:Name="gv_reward"/>
+                    <DataGrid ItemsSource="{Binding _rewards}" HorizontalScrollBarVisibility="Auto" RowHeaderWidth="0"
+                          VerticalScrollBarVisibility="Auto" x:Name="gv_reward" HorizontalGridLinesBrush="Gray" VerticalGridLinesBrush="Gray"/>
                 </DockPanel>
             </GroupBox>
-            
         </UniformGrid>
     </Grid>
 </Window>

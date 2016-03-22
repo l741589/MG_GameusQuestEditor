@@ -96,6 +96,10 @@ namespace MG_GameusQuestEditor {
         public String desc { get { return _desc; } set { this._desc = value; _PC("desc"); } }
         private String _desc;
 
+
+        public String DisplayName { get { return _DisplayName; } set { this._DisplayName = value; _PC("DisplayName"); } }
+        private String _DisplayName;
+
         public object[][] steps { get; set; }
         public object[][] rewards { get; set; }
 
@@ -103,9 +107,14 @@ namespace MG_GameusQuestEditor {
         public ObservableCollection<Reward> _rewards { get; set; }
 
         public Quest() {
-
+            name = "<NewQuest>";
+            DisplayName = String.Format("{0:0000}: {1}", id, name);
+            this.PropertyChanged += (o, e) => {
+                if (e.PropertyName == "id" || e.PropertyName == "name") {
+                    DisplayName=String.Format("{0:0000}: {1}", id, name);
+                }
+            };
             
-
         }
 
         public Quest Init() {
@@ -145,10 +154,6 @@ namespace MG_GameusQuestEditor {
                 }
             }
             return this;
-        }
-
-        public override string ToString() {
-            return String.Format("{0:0000}: {1}", id, name);
         }
     }
 
