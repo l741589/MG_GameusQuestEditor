@@ -26,7 +26,7 @@ namespace MG_GameusQuestEditor {
         private JavaScriptSerializer jss = new JavaScriptSerializer();
         public MainWindow() {
             InitializeComponent();
-            DataContext = data;
+            data = (Data)Resources["data"];
             Loaded += MainWindow_Loaded;
         }
 
@@ -41,6 +41,7 @@ namespace MG_GameusQuestEditor {
                 var cates=jss.ConvertToType<ObservableCollection<String>>(obj[0]);
                 AddAll(data.Category, cates.Select(s=>new StringWrapper(s)));
                 var quests = jss.ConvertToType<ObservableCollection<Quest>>(obj.Skip(1).ToArray());
+                AddAll(data.Quests, quests.Select(q => q.Init()));
                 Console.WriteLine();
             } catch (Exception ex) {
                 Console.WriteLine(ex.StackTrace);
@@ -91,6 +92,35 @@ namespace MG_GameusQuestEditor {
 
         private void cateEdit_LostFocus(object sender, RoutedEventArgs e) {
             (sender as TextBox).Visibility = Visibility.Hidden;
+        }
+
+        private void stepAdd_Click(object sender, RoutedEventArgs e) {
+            var items = ((ObservableCollection<Step>)gv_steps.ItemsSource);
+            if (items == null) return;
+            items.Add(new Step());
+        }
+
+        private void stepRemove_Click(object sender, RoutedEventArgs e) {
+            int i = gv_steps.SelectedIndex;
+            if (i == -1) return;
+            var items = ((ObservableCollection<Step>)gv_steps.ItemsSource);
+            items.RemoveAt(i);
+        }
+
+        private void stepUp_Click(object sender, RoutedEventArgs e) {
+            var items = ((ObservableCollection<Step>)gv_steps.ItemsSource);
+            if (items == null) return;
+            int i = gv_steps.SelectedIndex;
+            if (i <=0 ) return;
+            items.Move(i, i - 1);
+        }
+
+        private void stepDown_Click(object sender, RoutedEventArgs e) {
+            var items = ((ObservableCollection<Step>)gv_steps.ItemsSource);
+            if (items == null) return;
+            int i = gv_steps.SelectedIndex;
+            if (i < 0 || i >= items.Count - 1) return;
+            items.Move(i, i + 1);
         }
     }
 }

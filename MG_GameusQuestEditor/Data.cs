@@ -25,6 +25,17 @@ namespace MG_GameusQuestEditor {
         gold,
         xp,
         custom,
+        var,
+        kill,
+    }
+
+    enum RewardType {
+        item,
+        weapon,
+        armor,
+        gold,
+        xp,
+        custom,
     }
 
     class Step : BaseData {
@@ -52,18 +63,18 @@ namespace MG_GameusQuestEditor {
 
     class Reward : BaseData {
 
-        public TrackableType type { get { return _type; } set { this._type = value; _PC("type"); } }
-        private TrackableType _type;
+        public String desc { get { return _desc; } set { this._desc = value; _PC("desc"); } }
+        private String _desc;
+
+        public RewardType type { get { return _type; } set { this._type = value; _PC("type"); } }
+        private RewardType _type;
 
         public int amount { get { return _amount; } set { this._amount = value; _PC("amount"); } }
         private int _amount;
 
 
         public int id { get { return _id; } set { this._id = value; _PC("id"); } }
-        private int _id;
-
-        public String desc { get { return _desc; } set { this._desc = value; _PC("desc"); } }
-        private String _desc;
+        private int _id;        
 
         public bool hidden { get { return _hidden; } set { this._hidden = value; _PC("hidden"); } }
         private bool _hidden;
@@ -89,12 +100,55 @@ namespace MG_GameusQuestEditor {
         public object[][] rewards { get; set; }
 
         public ObservableCollection<Step> _steps { get; set; }
-        public ObservableCollection<Quest> _rewards { get; set; }
+        public ObservableCollection<Reward> _rewards { get; set; }
 
         public Quest() {
 
-            _steps = new ObservableCollection<Step>();
-            _rewards = new ObservableCollection<Quest>();
+            
+
+        }
+
+        public Quest Init() {
+            if (_steps == null) {
+                _steps = new ObservableCollection<Step>();
+                foreach (var e in steps) {
+                    Step step = new Step();
+                    step.name = e[0] + "";
+                    bool b;
+                    int x;
+                    if (bool.TryParse(e[1] + "", out b)) step.showProgress = b;
+                    step.trackType = TrackableType.var;                    
+                    if (int.TryParse(e[2] + "", out x)) step.trackId = x;
+                    if (int.TryParse(e[3] + "", out x)) step.maxValue = x;
+                    if (bool.TryParse(e[4] + "", out b)) step.percentage = b;
+                    step.code = "";
+                    _steps.Add(step);
+                }
+            }
+            if (_rewards == null) {
+                _rewards = new ObservableCollection<Reward>();
+                foreach (var e in rewards) {
+                    Reward r = new Reward();
+                    r.type = (RewardType)Enum.Parse(typeof(RewardType), e[0] + "", true);
+                    int x;
+                    if (r.type == RewardType.custom) {
+                        r.desc = e[1] + "";
+                        r.amount = 0;
+                    } else {
+                        if (int.TryParse(e[1] + "", out x)) r.amount = x;
+                        r.desc = "";
+                    }
+                    if (int.TryParse(e[2] + "", out x)) r.id = x;
+                    bool b;
+                    if (bool.TryParse(e[3] + "", out b)) r.hidden = b;
+                    _rewards.Add(r);
+                }
+            }
+            return this;
+        }
+
+        public override string ToString() {
+            return String.Format("{0:0000}: {1}", id, name);
         }
     }
 

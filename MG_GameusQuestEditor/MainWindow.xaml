@@ -4,8 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MG_GameusQuestEditor"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="400" Width="800">
+        mc:Ignorable="d" 
+        Title="MainWindow" Height="600" Width="800">
     <Window.Resources>
         <Style x:Key="ListBoxItemStyle" TargetType="ListBoxItem">
             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -13,9 +13,14 @@
             <EventSetter Event="Loaded" Handler="listItem_Loaded"/>
         </Style>
         <local:VisibilityConverter x:Key="VisibilityConverter"/>
+        <local:Data x:Key="data"/>
     </Window.Resources>
-    <DockPanel Margin="8">
-        <Grid DockPanel.Dock="Left" Width="260" Margin="0,0,8,0">
+    <Grid Margin="8" DataContext="{StaticResource data}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+        <Grid DockPanel.Dock="Left" Margin="0,0,8,0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="1*"/>
@@ -27,10 +32,10 @@
             <Label Grid.Row="0" Background="#99b4d1" HorizontalContentAlignment="Center" 
                    VerticalContentAlignment="Center" Foreground="White" 
                    FontSize="20" Content="Quest" Margin="0,0,0,4"/>
-            <ListBox Grid.Row="1">
+            <ListBox x:Name="listBox" Grid.Row="1" ItemsSource="{Binding Quests}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text="{Binding}" ToolTip="{Binding}" FontSize="10"></TextBlock>
+                        <TextBlock Text="{Binding}" ToolTip="{Binding}" />
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
@@ -43,7 +48,7 @@
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Grid MouseDown="cateItemDblClick">
-                            <TextBlock Text="{Binding String}" ToolTip="{Binding String}" FontSize="10"/>
+                            <TextBlock Text="{Binding String}" ToolTip="{Binding String}"/>
                             <TextBox Text="{Binding String}" FontSize="10" Visibility="Hidden" Name="cateEdit" LostFocus="cateEdit_LostFocus"/>
                         </Grid>
                     </DataTemplate>
@@ -55,76 +60,64 @@
                 <Button Margin="4,8,0,0" Name="removeCate" Click="removeCate_Click">Remove</Button>
             </UniformGrid>
         </Grid>
-        <GroupBox DockPanel.Dock="Bottom" MinHeight="200" Padding="0,4,4,0">
-            <GroupBox.Header>
-                <TextBlock FontSize="16">Steps</TextBlock>
-            </GroupBox.Header>
-            <DockPanel>
-                <StackPanel Orientation="Vertical" DockPanel.Dock="Left" Width="30">
-                    <Button Margin="4" FontSize="8" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">↑</Button>
-                    <Button Margin="4" FontSize="8">↓</Button>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" FlowDirection="RightToLeft">
-                    <Button Width="80" Height="20" Margin="0,4,0,0">Remove</Button>
-                    <Button Width="80" Height="20" Margin="8,4,8,0">Edit</Button>
-                    <Button Width="80" Height="20" Margin="0,4,0,0">Add</Button>
-                </StackPanel>
-                <DataGrid HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Step" MinWidth="200"/>
-                        <DataGridCheckBoxColumn Header="Show Progress?"/>
-                        <DataGridTextColumn Header="Progress Binding"/>
-                        <DataGridTextColumn Header="MaxValue"/>
-                        <DataGridCheckBoxColumn Header="Prcentage?"/>
-                    </DataGrid.Columns>
-                </DataGrid>
-            </DockPanel>
-        </GroupBox>
-        <GroupBox DockPanel.Dock="Left" MinWidth="300" Padding="4" MaxWidth="400">
-            <GroupBox.Header>
-                <TextBlock FontSize="16">Quest Info</TextBlock>
-            </GroupBox.Header>
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock>Quest Name</TextBlock>
-                <TextBlock Grid.Column="1" Grid.ColumnSpan="2">Quest Category</TextBlock>
-                <TextBox Grid.Column="0" Grid.Row="1"/>
-                <ComboBox Grid.Column="1" Grid.Row="1" Width="140" Grid.ColumnSpan="2" Margin="4,0,0,0" ItemsSource="{Binding Category}" SelectedIndex="0">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding String}" ToolTip="{Binding String}"/>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-                <TextBlock Grid.Column="0" Grid.Row="2" Margin="0,4,0,0">Quest Description</TextBlock>
-                <TextBlock Grid.Column="2" Grid.Row="2" Margin="0,4,0,0">Quest Icon</TextBlock>
-                <TextBox Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" Margin="0,0,8,0"
-                         AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"/>
-                <Image Grid.Column="3" Grid.Row="3" Width="64" Height="64"/>
-            </Grid>
-        </GroupBox>
-        <GroupBox DockPanel.Dock="Right">
-            <GroupBox.Header>
-                <TextBlock FontSize="16">Rewards</TextBlock>
-            </GroupBox.Header>
-            <DataGrid>
-                <DataGrid.Columns>
-                    <DataGridComboBoxColumn Header="Type"/>
-                    <DataGridTextColumn Header="Amount"/>
-                    <DataGridComboBoxColumn Header="Id"/>
-                    <DataGridCheckBoxColumn Header="Hidden"/>
-                </DataGrid.Columns>
-            </DataGrid>
-        </GroupBox>
-    </DockPanel>
+        <UniformGrid  Columns="1"  Rows="3" Grid.Column="1" DataContext="{Binding SelectedValue, ElementName=listBox, Mode=OneWay}" >
+            <GroupBox Padding="4">
+                <GroupBox.Header>
+                    <TextBlock FontSize="16"><Run Text="Quest Info"/></TextBlock>
+                </GroupBox.Header>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock><Run Text="Quest Name"/></TextBlock>
+                    <TextBlock Grid.Column="1" Grid.ColumnSpan="2"><Run Text="Quest Category"/></TextBlock>
+                    <TextBox Grid.Column="0" Grid.Row="1" Text="{Binding name}"/>
+                    <ComboBox Grid.Column="1" Grid.Row="1" MinWidth="140" Grid.ColumnSpan="2" Margin="4,0,0,0"
+                              ItemsSource="{Binding Category,Source={StaticResource data}}"  SelectedIndex="{Binding cat}" >
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding String}" ToolTip="{Binding String}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <TextBlock Grid.Column="0" Grid.Row="2" Margin="0,4,0,0"><Run Text="Quest Description"/></TextBlock>
+                    <TextBlock Grid.Column="2" Grid.Row="2" Margin="0,4,0,0"><Run Text="Quest Icon"/></TextBlock>
+                    <TextBox Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" Margin="0,0,8,0" Text="{Binding desc}"
+        				AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"/>
+                    <Image Grid.Column="3" Grid.Row="3" Width="64" Height="64"/>
+                </Grid>
+            </GroupBox>
+            <GroupBox Padding="4">
+                <GroupBox.Header>
+                    <TextBlock FontSize="16"><Run Text="Steps"/></TextBlock>
+                </GroupBox.Header>
+                <DockPanel>
+                    <local:TableControler DockPanel.Dock="Right" For="{Binding ElementName=gv_steps, Mode=OneWay}" 
+                                          ElementType="MG_GameusQuestEditor.Step"/>
+                    <DataGrid HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" RowHeaderWidth="0" 
+                              ItemsSource="{Binding _steps}" x:Name="gv_steps"/>
+                </DockPanel>
+            </GroupBox>
+            <GroupBox Padding="4">
+                <GroupBox.Header>
+                    <TextBlock FontSize="16"><Run Text="Rewards"/></TextBlock>
+                </GroupBox.Header>
+                <DockPanel>
+                    <local:TableControler For="{Binding ElementName=gv_reward, Mode=OneWay}" DockPanel.Dock="Right"  
+                                        ElementType="MG_GameusQuestEditor.Reward"/>
+                    <DataGrid ItemsSource="{Binding _rewards}" HorizontalScrollBarVisibility="Auto" 
+                          VerticalScrollBarVisibility="Auto" x:Name="gv_reward"/>
+                </DockPanel>
+            </GroupBox>
+            
+        </UniformGrid>
+    </Grid>
 </Window>
