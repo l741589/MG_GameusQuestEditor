@@ -1,3 +1,4 @@
 .vs/
 MG_GameusQuestEditor/obj/
 MG_GameusQuestEditor/bin/
+*.suo

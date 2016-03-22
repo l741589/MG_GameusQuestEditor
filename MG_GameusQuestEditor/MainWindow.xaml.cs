@@ -30,12 +30,17 @@ namespace MG_GameusQuestEditor {
             Loaded += MainWindow_Loaded;
         }
 
+       
+
         private void AddAll<T>(Collection<T> dest, IEnumerable<T> src) {
             foreach (T e in src) dest.Add(e);
         }
 
-        private void MainWindow_Loaded(object sender, RoutedEventArgs e) {
+        private void MainWindow_Loaded(object sender, RoutedEventArgs ex) {
             try {
+                foreach (var e in gv_reward.Columns) e.CanUserSort = false;
+                foreach (var e in gv_steps.Columns) e.CanUserSort = false;
+
                 String text = File.ReadAllText(App.Path + "data/Quests.json");
                 var obj=jss.Deserialize<Object[]>(text);
                 var cates=jss.ConvertToType<ObservableCollection<String>>(obj[0]);
@@ -43,23 +48,14 @@ namespace MG_GameusQuestEditor {
                 var quests = jss.ConvertToType<ObservableCollection<Quest>>(obj.Skip(1).ToArray());
                 AddAll(data.Quests, quests.Select(q => q.Init()));
                 Console.WriteLine();
-            } catch (Exception ex) {
-                Console.WriteLine(ex.StackTrace);
+
+               
+            } catch (Exception exc) {
+                Console.WriteLine(exc.StackTrace);
                 MessageBox.Show("please place this file in your project folder");
                 Close();
             }
         }
-
-        private void addCate_Click(object sender, RoutedEventArgs e) {
-            data.Category.Add("<新类别>");
-            int i = data.Category.Count;
-            cateList.SelectedIndex = i - 1;            
-        }
-
-        private void removeCate_Click(object sender, RoutedEventArgs e) {
-            if (cateList.SelectedIndex>=0) data.Category.RemoveAt(cateList.SelectedIndex);
-        }
-
         
 
         private void listItem_Loaded(object sender, RoutedEventArgs e) {
@@ -74,7 +70,7 @@ namespace MG_GameusQuestEditor {
             elem.SetBinding(FrameworkElement.MaxWidthProperty, b);
         }
 
-        private void doDoubleClick(object sender) {
+        private void doEdit(object sender) {
             FrameworkElement g = sender as FrameworkElement;
             if (g == null) return;
             TextBox tb = g.FindName("cateEdit") as TextBox;
@@ -86,7 +82,7 @@ namespace MG_GameusQuestEditor {
 
         private void cateItemDblClick(object sender, MouseButtonEventArgs e) {
             if (e.ClickCount == 2 && e.ChangedButton == MouseButton.Left) {
-                doDoubleClick(sender);
+                doEdit(sender);
             }
         }
 

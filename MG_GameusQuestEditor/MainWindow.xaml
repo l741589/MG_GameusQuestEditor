@@ -4,7 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MG_GameusQuestEditor"
-        mc:Ignorable="d" 
+        xmlns:core="clr-namespace:System;assembly=mscorlib"
+        mc:Ignorable="d"  x:Name="window"
         Title="MainWindow" Height="600" Width="800">
     <Window.Resources>
         <Style x:Key="ListBoxItemStyle" TargetType="ListBoxItem">
@@ -14,6 +15,14 @@
         </Style>
         <local:VisibilityConverter x:Key="VisibilityConverter"/>
         <local:Data x:Key="data"/>
+        <local:EnumValuesConverter x:Key="enumCvt"/>
+        <local:ItemsIdConverter x:Key="ItemsIdCvt"/>
+        <ObjectDataProvider x:Key="RewardType" MethodName="GetValues" ObjectType="{x:Type core:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type Type="local:RewardType"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <ObjectDataProvider x:Key="Numbers" MethodName="GetNumbers" ObjectType="{x:Type local:DataPro}"/>
     </Window.Resources>
     <Grid Margin="8" DataContext="{StaticResource data}">
         <Grid.ColumnDefinitions>
@@ -30,7 +39,7 @@
                 <ListBox x:Name="listBox" Grid.Row="1" ItemsSource="{Binding Quests}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                                <TextBlock Text="{Binding DisplayName}" ToolTip="{Binding DisplayName}" />
+                                <TextBlock Text="{Binding DisplayName}" ToolTip="{Binding DisplayName}"/>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
@@ -100,7 +109,9 @@
                     <local:TableControler DockPanel.Dock="Right" For="{Binding ElementName=gv_steps, Mode=OneWay}" 
                                           ElementType="MG_GameusQuestEditor.Step"/>
                     <DataGrid HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" RowHeaderWidth="0" 
-                              ItemsSource="{Binding _steps}" x:Name="gv_steps" HorizontalGridLinesBrush="Gray" VerticalGridLinesBrush="Gray"/>
+                              ItemsSource="{Binding _steps}" x:Name="gv_steps" HorizontalGridLinesBrush="Gray" 
+                              VerticalGridLinesBrush="Gray" >
+                    </DataGrid>
                 </DockPanel>
             </GroupBox>
             <GroupBox Padding="4">
@@ -111,7 +122,30 @@
                     <local:TableControler For="{Binding ElementName=gv_reward, Mode=OneWay}" DockPanel.Dock="Right"  
                                         ElementType="MG_GameusQuestEditor.Reward"/>
                     <DataGrid ItemsSource="{Binding _rewards}" HorizontalScrollBarVisibility="Auto" RowHeaderWidth="0"
-                          VerticalScrollBarVisibility="Auto" x:Name="gv_reward" HorizontalGridLinesBrush="Gray" VerticalGridLinesBrush="Gray"/>
+                          VerticalScrollBarVisibility="Auto" x:Name="gv_reward" HorizontalGridLinesBrush="Gray" VerticalGridLinesBrush="Gray" >
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Description" Binding="{Binding desc}"/>
+                            <DataGridComboBoxColumn Header="Type"  SelectedValueBinding="{Binding type}" 
+                                                    ItemsSource="{Binding Source={StaticResource RewardType}}" />
+                            <DataGridTextColumn Header="Amount" Binding="{Binding amount}"/>
+                            <DataGridComboBoxColumn Header="Id">
+    
+                            </DataGridComboBoxColumn>
+                            <DataGridTemplateColumn Header="Template模式">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <ComboBox SelectedValue="{Binding id}">
+                                            <ComboBox.ItemsSource>
+                                                <MultiBinding Converter="{StaticResource ItemsIdCvt}">
+                                                    
+                                                </MultiBinding>
+                                            </ComboBox.ItemsSource>
+                                        </ComboBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
                 </DockPanel>
             </GroupBox>
         </UniformGrid>

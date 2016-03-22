@@ -78,6 +78,11 @@ namespace MG_GameusQuestEditor {
 
         public bool hidden { get { return _hidden; } set { this._hidden = value; _PC("hidden"); } }
         private bool _hidden;
+
+
+        /////////////////////////////////////////////////
+
+        public Tuple<int,string> DisplayId { get { return new Tuple<int,string>(id,_type+":"+id); } } private Tuple<int,string> _DisplayId = default(Tuple<int,string>);
     }
 
     class Quest :BaseData{

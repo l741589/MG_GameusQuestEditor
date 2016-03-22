@@ -27,4 +27,39 @@ namespace MG_GameusQuestEditor {
             throw new NotImplementedException();
         }
     }
+
+    class EnumValuesConverter : IValueConverter {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
+            if (value is String) {
+                return Enum.GetValues(Type.GetType(value + ""));
+            } else {
+                return Enum.GetValues(value.GetType());
+            }
+        }
+
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
+            throw new NotImplementedException();
+        }
+    }
+
+    class ItemsIdConverter : IMultiValueConverter {
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
+            throw new NotImplementedException();
+        }
+
+        public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
+            if (values[0] is int) {
+                var id = (int)values[0];
+                RewardType t = (RewardType)values[1];
+                return t + ":" + id;
+            }
+            return values+"";
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture) {
+            throw new NotImplementedException();
+        }
+    }
 }
