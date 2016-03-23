@@ -1,0 +1,48 @@
+﻿<Window x:Class="MG_GameusQuestEditor.EditStep"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MG_GameusQuestEditor"
+        xmlns:core="clr-namespace:System;assembly=mscorlib"
+        mc:Ignorable="d" 
+        Title="EditReward" Height="500" Width="300">
+    <Window.Resources>
+        <ObjectDataProvider x:Key="TrackableType" MethodName="GetValues" ObjectType="{x:Type core:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type Type="local:TrackableType"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </Window.Resources>
+    <DockPanel Margin="8" LastChildFill="True">
+        <TextBlock DockPanel.Dock="Top">Type</TextBlock>
+        <ComboBox DockPanel.Dock="Top" ItemsSource="{Binding Source={StaticResource TrackableType}}" 
+                  SelectedItem="{Binding type}" x:Name="cb_type"
+                  SelectionChanged="cb_type_SelectionChanged"/>
+
+        <TextBlock DockPanel.Dock="Top" Margin="0,8,0,0">Amount</TextBlock>
+        <TextBox DockPanel.Dock="Top" Text="{Binding amount}" x:Name="tb_amount"/>
+
+        <TextBlock DockPanel.Dock="Top" Margin="0,8,0,0">Id</TextBlock>
+        <ComboBox DockPanel.Dock="Top" x:Name="cb_id"/>
+
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" FlowDirection="RightToLeft">
+            <Button Width="80" IsCancel="True" >Cancel</Button>
+            <Button Width="80" Margin="8,0" IsDefault="True" Click="Button_Click">OK</Button>
+        </StackPanel>
+
+        <CheckBox DockPanel.Dock="Bottom" Margin="0,0,0,8" x:Name="cb_precentage" IsChecked="{Binding percentage}">Show Percentage?</CheckBox>
+        <CheckBox DockPanel.Dock="Bottom" Margin="0,8,0,0" x:Name="cb_progess" IsChecked="{Binding showProgress}">Show Progress?</CheckBox>
+        
+        <TextBox DockPanel.Dock="Bottom" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" Margin="0,0,8,0" Text="{Binding code}" x:Name="tb_code"
+        				AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"/>
+        <TextBlock DockPanel.Dock="Bottom" Margin="0,8,0,0">Code</TextBlock>
+        
+        
+        <TextBlock DockPanel.Dock="Top" Margin="0,8,0,0">Desc</TextBlock>
+        <TextBox DockPanel.Dock="Top" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" Margin="0,0,8,0" Text="{Binding desc}" x:Name="tb_desc"
+        				AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"/>
+
+        
+    </DockPanel>
+</Window>

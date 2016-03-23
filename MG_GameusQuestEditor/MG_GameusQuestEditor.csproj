@@ -38,7 +38,9 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -57,12 +59,26 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="DataPro.cs" />
+    <Compile Include="D.cs" />
+    <Compile Include="EditStep.xaml.cs">
+      <DependentUpon>EditStep.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="EditReward.xaml.cs">
+      <DependentUpon>EditReward.xaml</DependentUpon>
+    </Compile>
     <Compile Include="StringWrapper.cs" />
     <Compile Include="Converters.cs" />
     <Compile Include="TableControler.xaml.cs">
       <DependentUpon>TableControler.xaml</DependentUpon>
     </Compile>
+    <Page Include="EditStep.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="EditReward.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

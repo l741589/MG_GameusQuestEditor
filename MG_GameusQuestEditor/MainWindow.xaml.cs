@@ -22,37 +22,14 @@ namespace MG_GameusQuestEditor {
     /// </summary>
     public partial class MainWindow : Window {
 
-        private Data data = new Data();
-        private JavaScriptSerializer jss = new JavaScriptSerializer();
+        
         public MainWindow() {
             InitializeComponent();
-            data = (Data)Resources["data"];
-            Loaded += MainWindow_Loaded;
-        }
-
-       
-
-        private void AddAll<T>(Collection<T> dest, IEnumerable<T> src) {
-            foreach (T e in src) dest.Add(e);
-        }
-
-        private void MainWindow_Loaded(object sender, RoutedEventArgs ex) {
             try {
-                foreach (var e in gv_reward.Columns) e.CanUserSort = false;
-                foreach (var e in gv_steps.Columns) e.CanUserSort = false;
-
-                String text = File.ReadAllText(App.Path + "data/Quests.json");
-                var obj=jss.Deserialize<Object[]>(text);
-                var cates=jss.ConvertToType<ObservableCollection<String>>(obj[0]);
-                AddAll(data.Category, cates.Select(s=>new StringWrapper(s)));
-                var quests = jss.ConvertToType<ObservableCollection<Quest>>(obj.Skip(1).ToArray());
-                AddAll(data.Quests, quests.Select(q => q.Init()));
-                Console.WriteLine();
-
-               
-            } catch (Exception exc) {
-                Console.WriteLine(exc.StackTrace);
-                MessageBox.Show("please place this file in your project folder");
+                D.Init((Data)Resources["data"]);
+            } catch (Exception e) {
+                Console.WriteLine(e.StackTrace);
+                MessageBox.Show("please place this program in your project directory");
                 Close();
             }
         }
@@ -117,6 +94,36 @@ namespace MG_GameusQuestEditor {
             int i = gv_steps.SelectedIndex;
             if (i < 0 || i >= items.Count - 1) return;
             items.Move(i, i + 1);
+        }
+
+        private void gv_reward_MouseDown(object sender, MouseButtonEventArgs e) {
+            if (e.ClickCount == 2 && e.ChangedButton == MouseButton.Left) {
+                EditReward er = new EditReward();
+                var gv = (sender as DataGrid);
+                if (gv == null) return;
+                var quest = gv.DataContext as Quest;
+                if (quest == null) return;
+                int i = gv.SelectedIndex;
+                er.Reward = (Reward)quest._rewards[i].Clone();
+                if (er.ShowDialog() == true) {
+                    quest._rewards[i] = er.Reward;
+                }
+            }
+        }
+
+        private void gv_steps_MouseDown(object sender, MouseButtonEventArgs e) {
+            if (e.ClickCount == 2 && e.ChangedButton == MouseButton.Left) {
+                EditStep er = new EditStep();
+                var gv = (sender as DataGrid);
+                if (gv == null) return;
+                var quest = gv.DataContext as Quest;
+                if (quest == null) return;
+                int i = gv.SelectedIndex;
+                er.Step = (Step)quest._steps[i].Clone();
+                if (er.ShowDialog() == true) {
+                    quest._steps[i] = er.Step;
+                }
+            }
         }
     }
 }

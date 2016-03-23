@@ -17,12 +17,7 @@
         <local:Data x:Key="data"/>
         <local:EnumValuesConverter x:Key="enumCvt"/>
         <local:ItemsIdConverter x:Key="ItemsIdCvt"/>
-        <ObjectDataProvider x:Key="RewardType" MethodName="GetValues" ObjectType="{x:Type core:Enum}">
-            <ObjectDataProvider.MethodParameters>
-                <x:Type Type="local:RewardType"/>
-            </ObjectDataProvider.MethodParameters>
-        </ObjectDataProvider>
-        <ObjectDataProvider x:Key="Numbers" MethodName="GetNumbers" ObjectType="{x:Type local:DataPro}"/>
+        <local:StrEscapeConverter x:Key="strEscCvt"/>
     </Window.Resources>
     <Grid Margin="8" DataContext="{StaticResource data}">
         <Grid.ColumnDefinitions>
@@ -108,9 +103,25 @@
                 <DockPanel>
                     <local:TableControler DockPanel.Dock="Right" For="{Binding ElementName=gv_steps, Mode=OneWay}" 
                                           ElementType="MG_GameusQuestEditor.Step"/>
-                    <DataGrid HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" RowHeaderWidth="0" 
-                              ItemsSource="{Binding _steps}" x:Name="gv_steps" HorizontalGridLinesBrush="Gray" 
-                              VerticalGridLinesBrush="Gray" >
+                    <DataGrid HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" RowHeaderWidth="0" IsReadOnly="True" 
+                              ItemsSource="{Binding _steps}" x:Name="gv_steps" HorizontalGridLinesBrush="Gray" AutoGenerateColumns="False"
+                              VerticalGridLinesBrush="Gray" MouseDown="gv_steps_MouseDown">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Type" Binding="{Binding type}" CanUserSort="False"/>
+                            <DataGridTextColumn Header="Id" CanUserSort="False">
+                                <DataGridTextColumn.Binding>
+                                    <MultiBinding Converter="{StaticResource ItemsIdCvt}" Mode="OneWay">
+                                        <Binding Path="id"/>
+                                        <Binding Path="type"/>
+                                    </MultiBinding>
+                                </DataGridTextColumn.Binding>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Amount" Binding="{Binding amount}" CanUserSort="False"/>
+                            <DataGridTextColumn Header="Desc" Binding="{Binding desc,Converter={StaticResource strEscCvt}}" CanUserSort="False"/>
+                            <DataGridTextColumn Header="Code" Binding="{Binding code,Converter={StaticResource strEscCvt}}" CanUserSort="False"/>
+                            <DataGridTextColumn Header="ShowProgress?" Binding="{Binding showProgress}" CanUserSort="False"/>
+                            <DataGridTextColumn Header="ShowPercentage?" Binding="{Binding percentage}" CanUserSort="False"/>
+                        </DataGrid.Columns>
                     </DataGrid>
                 </DockPanel>
             </GroupBox>
@@ -121,29 +132,22 @@
                 <DockPanel>
                     <local:TableControler For="{Binding ElementName=gv_reward, Mode=OneWay}" DockPanel.Dock="Right"  
                                         ElementType="MG_GameusQuestEditor.Reward"/>
-                    <DataGrid ItemsSource="{Binding _rewards}" HorizontalScrollBarVisibility="Auto" RowHeaderWidth="0"
-                          VerticalScrollBarVisibility="Auto" x:Name="gv_reward" HorizontalGridLinesBrush="Gray" VerticalGridLinesBrush="Gray" >
+                    <DataGrid ItemsSource="{Binding _rewards}" HorizontalScrollBarVisibility="Auto" RowHeaderWidth="0" IsReadOnly="True" AutoGenerateColumns="False"
+                          VerticalScrollBarVisibility="Auto" x:Name="gv_reward" HorizontalGridLinesBrush="Gray" VerticalGridLinesBrush="Gray"
+                              MouseDown="gv_reward_MouseDown">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Description" Binding="{Binding desc}"/>
-                            <DataGridComboBoxColumn Header="Type"  SelectedValueBinding="{Binding type}" 
-                                                    ItemsSource="{Binding Source={StaticResource RewardType}}" />
-                            <DataGridTextColumn Header="Amount" Binding="{Binding amount}"/>
-                            <DataGridComboBoxColumn Header="Id">
-    
-                            </DataGridComboBoxColumn>
-                            <DataGridTemplateColumn Header="Template模式">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <ComboBox SelectedValue="{Binding id}">
-                                            <ComboBox.ItemsSource>
-                                                <MultiBinding Converter="{StaticResource ItemsIdCvt}">
-                                                    
-                                                </MultiBinding>
-                                            </ComboBox.ItemsSource>
-                                        </ComboBox>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="Type" Binding="{Binding type}" CanUserSort="False"/>                            
+                            <DataGridTextColumn Header="Id" CanUserSort="False">
+                                <DataGridTextColumn.Binding>
+                                    <MultiBinding Converter="{StaticResource ItemsIdCvt}" Mode="OneWay">
+                                        <Binding Path="id"/>
+                                        <Binding Path="type"/>
+                                    </MultiBinding>
+                                </DataGridTextColumn.Binding>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Amount" Binding="{Binding amount}" CanUserSort="False"/>
+                            <DataGridTextColumn Header="Desc" Binding="{Binding desc,Converter={StaticResource strEscCvt}}" CanUserSort="False"/>
+                            <DataGridTextColumn Header="Hidden" Binding="{Binding hidden}" CanUserSort="False"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </DockPanel>

@@ -23,10 +23,10 @@ namespace MG_GameusQuestEditor {
         weapon,
         armor,
         gold,
-        xp,
         custom,
-        var,
-        kill,
+        variable,
+        Switch
+        //kill,
     }
 
     enum RewardType {
@@ -38,30 +38,37 @@ namespace MG_GameusQuestEditor {
         custom,
     }
 
-    class Step : BaseData {
-        public String name { get { return _name; } set { this._name = value; _PC("name"); } }
-        private String _name;
+    class Step : BaseData, ICloneable {
 
-        public bool showProgress { get { return _showProgress; } set { this._showProgress = value; _PC("showProgress"); } }
-        private bool _showProgress;
+        public String desc { get { return _desc; } set { this._desc = value; _PC("desc"); } }
+        private String _desc;
 
-        public TrackableType trackType { get { return _trackType; } set { this._trackType = value; _PC("trackType"); } }
-        private TrackableType _trackType;
+        
 
-        public int trackId { get { return _trackId; } set { this._trackId = value; _PC("trackId"); } }
-        private int _trackId;
+        public TrackableType type { get { return _type; } set { this._type = value; _PC("type"); } }
+        private TrackableType _type;
+
+        public int id { get { return _id; } set { this._id = value; _PC("id"); } }
+        private int _id;
 
         public String code { get { return _code; } set { this._code = value; _PC("code"); } }
         private String _code;
 
-        public int maxValue { get { return _maxValue; } set { this._maxValue = value; _PC("maxValue"); } }
-        private int _maxValue;
+        public int amount { get { return _amount; } set { this._amount = value; _PC("amount"); } }
+        private int _amount;
+
+        public bool showProgress { get { return _showProgress; } set { this._showProgress = value; _PC("showProgress"); } }
+        private bool _showProgress;
 
         public bool percentage { get { return _percentage; } set { this._percentage = value; _PC("percentage"); } }
         private bool _percentage;
+
+        public object Clone() {
+            return MemberwiseClone();
+        }
     }
 
-    class Reward : BaseData {
+    class Reward : BaseData,ICloneable {
 
         public String desc { get { return _desc; } set { this._desc = value; _PC("desc"); } }
         private String _desc;
@@ -82,7 +89,9 @@ namespace MG_GameusQuestEditor {
 
         /////////////////////////////////////////////////
 
-        public Tuple<int,string> DisplayId { get { return new Tuple<int,string>(id,_type+":"+id); } } private Tuple<int,string> _DisplayId = default(Tuple<int,string>);
+        public object Clone() {
+            return MemberwiseClone();
+        }
     }
 
     class Quest :BaseData{
@@ -127,13 +136,13 @@ namespace MG_GameusQuestEditor {
                 _steps = new ObservableCollection<Step>();
                 foreach (var e in steps) {
                     Step step = new Step();
-                    step.name = e[0] + "";
+                    step.desc = e[0] + "";
                     bool b;
                     int x;
                     if (bool.TryParse(e[1] + "", out b)) step.showProgress = b;
-                    step.trackType = TrackableType.var;                    
-                    if (int.TryParse(e[2] + "", out x)) step.trackId = x;
-                    if (int.TryParse(e[3] + "", out x)) step.maxValue = x;
+                    step.type = TrackableType.variable;                    
+                    if (int.TryParse(e[2] + "", out x)) step.id = x;
+                    if (int.TryParse(e[3] + "", out x)) step.amount = x;
                     if (bool.TryParse(e[4] + "", out b)) step.percentage = b;
                     step.code = "";
                     _steps.Add(step);
@@ -145,16 +154,21 @@ namespace MG_GameusQuestEditor {
                     Reward r = new Reward();
                     r.type = (RewardType)Enum.Parse(typeof(RewardType), e[0] + "", true);
                     int x;
+                    bool b;
+                    if (bool.TryParse(e[3] + "", out b)) r.hidden = b;
                     if (r.type == RewardType.custom) {
                         r.desc = e[1] + "";
                         r.amount = 0;
-                    } else {
-                        if (int.TryParse(e[1] + "", out x)) r.amount = x;
+                        r.id = 0;
+                    } else if (r.type == RewardType.item || r.type == RewardType.armor || r.type == RewardType.weapon) {
+                        if (int.TryParse(e[1] + "", out x)) r.id = x;
+                        if (int.TryParse(e[2] + "", out x)) r.amount = x;
                         r.desc = "";
+                    } else {
+                        r.desc = "";
+                        r.id = 0;
+                        if (int.TryParse(e[1] + "", out x)) r.amount = x;
                     }
-                    if (int.TryParse(e[2] + "", out x)) r.id = x;
-                    bool b;
-                    if (bool.TryParse(e[3] + "", out b)) r.hidden = b;
                     _rewards.Add(r);
                 }
             }

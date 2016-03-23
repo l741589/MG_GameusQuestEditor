@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -45,6 +46,7 @@ namespace MG_GameusQuestEditor {
 
     class ItemsIdConverter : IMultiValueConverter {
 
+
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
             throw new NotImplementedException();
         }
@@ -52,13 +54,27 @@ namespace MG_GameusQuestEditor {
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
             if (values[0] is int) {
                 var id = (int)values[0];
-                RewardType t = (RewardType)values[1];
-                return t + ":" + id;
+                if (id < 0) return D.N_A;
+                IdNamePair[] ps = D.GetItems(values[1]);
+                int i = D.IndexOf(ps, id);
+                return ps[i].ToString();
             }
-            return values+"";
+            return D.N_A;
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture) {
+            throw new NotImplementedException();
+        }
+    }
+
+    class StrEscapeConverter : IValueConverter {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
+            if (value == null) return "";
+            var s = value.ToString();
+            return s.Replace("\r", "\\r").Replace("\n", "\\n");
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
             throw new NotImplementedException();
         }
     }
