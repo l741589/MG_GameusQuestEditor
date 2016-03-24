@@ -56,21 +56,8 @@ namespace MG_GameusQuestEditor {
             }
         }
 
-
-        public static DependencyProperty InitArgumentProperty = DependencyProperty.Register("InitArgument", typeof(string), typeof(TableControler));
-
-        [System.ComponentModel.Description("InitArgument")]
-        [System.ComponentModel.Category("InitArgument Category")]
-        [System.ComponentModel.Browsable(true)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Visible)]
-        public string InitArgument {
-            get {
-                return ((string)(base.GetValue(TableControler.InitArgumentProperty)));
-            }
-            set {
-                base.SetValue(TableControler.InitArgumentProperty, value);
-            }
-        }
+        public delegate void AddItemHandler(object item);
+        public event AddItemHandler AddItem;
 
         private Type type;
 
@@ -78,13 +65,9 @@ namespace MG_GameusQuestEditor {
             dynamic items = For.ItemsSource;
             if (items == null) return;
             if (type == null) type = Type.GetType(ElementType);
-            if (String.IsNullOrEmpty(InitArgument)) {
-                dynamic elem = type.GetConstructor(new Type[0]).Invoke(new object[0]);
-                items.Add(elem);
-            } else {
-                dynamic elem = type.GetConstructor(new Type[] { typeof(string) }).Invoke(new object[] { InitArgument});
-                items.Add(elem);
-            }
+            dynamic elem = type.GetConstructor(new Type[0]).Invoke(new object[0]);
+            items.Add(elem);
+            if (AddItem != null) AddItem(elem);
         }
 
         private void remove_Click(object sender, RoutedEventArgs e) {

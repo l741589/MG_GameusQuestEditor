@@ -22,16 +22,24 @@ namespace MG_GameusQuestEditor {
     /// </summary>
     public partial class MainWindow : Window {
 
+        private bool modified = false;
         
         public MainWindow() {
             InitializeComponent();
+            questCtrl.AddItem += questCtrl_AddItem;
             try {
                 D.Init((Data)Resources["data"]);
+                //icon.Source = D.IconSet;
+                modified = true;
             } catch (Exception e) {
                 Console.WriteLine(e.StackTrace);
                 MessageBox.Show("please place this program in your project directory");
                 Close();
             }
+        }
+
+        void questCtrl_AddItem(object item) {
+            ((Quest)item).Init();
         }
         
 
@@ -125,5 +133,38 @@ namespace MG_GameusQuestEditor {
                 }
             }
         }
+
+        private void icon_MouseDown(object sender, MouseButtonEventArgs e) {
+            if (e.ClickCount == 2 && e.ChangedButton == MouseButton.Left) {
+                var gv = (sender as FrameworkElement);
+                if (gv == null) return;
+                var quest = gv.DataContext as Quest;
+                if (quest == null) return;
+                SelectIcon si = new SelectIcon();
+                si.Index = quest.icon;
+                if (si.ShowDialog() == true) {
+                    quest.icon = si.Index;
+                }
+                
+            }
+        }
+
+        private void save_Click(object sender, RoutedEventArgs e) {
+            D.Save();
+        }
+
+        private void close_Click(object sender, RoutedEventArgs e) {
+            Close();
+        }
+
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e) {
+            base.OnClosing(e);
+            switch (MessageBox.Show("Save?", "Close", MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.Yes)) {
+            case MessageBoxResult.Yes: D.Save(); break;
+            case MessageBoxResult.No: break;
+            default: e.Cancel = true; break;
+            }            
+        }
+
     }
 }

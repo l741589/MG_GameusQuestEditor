@@ -1,10 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace MG_GameusQuestEditor {
     class VisibilityConverter : IValueConverter {
@@ -72,6 +78,31 @@ namespace MG_GameusQuestEditor {
             if (value == null) return "";
             var s = value.ToString();
             return s.Replace("\r", "\\r").Replace("\n", "\\n");
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
+            throw new NotImplementedException();
+        }
+    }
+
+    class IconClipConverter : IValueConverter {
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
+            int width = 32;
+            int x = (int)value;
+            var linecount = (int)D.IconSet.Width / width;
+            var rect = new Rectangle(x % linecount * width, x / linecount * width, width, width);
+            System.Drawing.Image img=System.Drawing.Image.FromFile(D.IconSetFile);
+            Bitmap ob=new Bitmap(width,width);
+            Graphics g = Graphics.FromImage(ob);
+            g.DrawImage(img, new Rectangle(0, 0, width, width), rect, GraphicsUnit.Pixel);
+            MemoryStream stream=new MemoryStream();
+            ob.Save(stream,ImageFormat.Png);
+            BitmapImage bitmapImage = new BitmapImage();  
+            bitmapImage.BeginInit();  
+            bitmapImage.StreamSource = stream;  
+            bitmapImage.EndInit();
+            return bitmapImage;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {

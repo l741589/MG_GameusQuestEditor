@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Web.Script.Serialization;
 using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace MG_GameusQuestEditor {
 
@@ -28,6 +30,8 @@ namespace MG_GameusQuestEditor {
         public static IdNamePair[] Variables;
         public static IdNamePair[] Switches;
         public static IdNamePair N_A = new IdNamePair { id = 0, name = "N/A" };
+        public static ImageSource IconSet;
+        public static string IconSetFile;
 
         private class SystemFile {
             public string[] variables;
@@ -46,26 +50,27 @@ namespace MG_GameusQuestEditor {
         }
 
         public static void Init(Data data) {
-                Data = data;
-                String text = T("Quests");
-                if (text != null) {
-                    var obj = jss.Deserialize<Object[]>(text);
-                    var cates = jss.ConvertToType<ObservableCollection<String>>(obj[0]);
-                    AddAll(D.Data.Category, cates.Select(s => new StringWrapper(s)));
-                    var quests = jss.ConvertToType<ObservableCollection<Quest>>(obj.Skip(1).ToArray());
-                    AddAll(D.Data.Quests, quests.Select(q => q.Init()));
-                } else {
-                    Data.Category.Add("category1");
-                    Data.Category.Add("category2");
-                }
-                Items = jss.Deserialize<IdNamePair[]>(T("Items")).Select(v=>v==null? N_A :v).Skip(1).ToArray();
-                Weapons = jss.Deserialize<IdNamePair[]>(T("Weapons")).Select(v => v == null ? N_A : v).Skip(1).ToArray();
-                Armors = jss.Deserialize<IdNamePair[]>(T("Armors")).Select(v => v == null ? N_A : v).Skip(1).ToArray();
+            Data = data;
+            String text = T("Quests");
+            if (text != null) {
+                var obj = jss.Deserialize<Object[]>(text);
+                var cates = jss.ConvertToType<ObservableCollection<String>>(obj[0]);
+                AddAll(D.Data.Category, cates.Select(s => new Category(s)));
+                var quests = jss.ConvertToType<ObservableCollection<Quest>>(obj.Skip(1).ToArray());
+                AddAll(D.Data.Quests, quests.Select(q => q.Init()));
+            } else {
+                Data.Category.Add("category1");
+                Data.Category.Add("category2");
+            }
+            Items = jss.Deserialize<IdNamePair[]>(T("Items")).Select(v => v == null ? N_A : v).Skip(1).ToArray();
+            Weapons = jss.Deserialize<IdNamePair[]>(T("Weapons")).Select(v => v == null ? N_A : v).Skip(1).ToArray();
+            Armors = jss.Deserialize<IdNamePair[]>(T("Armors")).Select(v => v == null ? N_A : v).Skip(1).ToArray();
 
-                SystemFile sf = jss.Deserialize<SystemFile>(T("System"));
-                Variables = sf.variables.Select((v, i) => v==null?N_A:new IdNamePair { id = i, name = v }).Skip(1).ToArray();
-                Switches = sf.switches.Select((v, i) => v == null ? N_A : new IdNamePair { id = i, name = v }).Skip(1).ToArray();
-           
+            SystemFile sf = jss.Deserialize<SystemFile>(T("System"));
+            Variables = sf.variables.Select((v, i) => v == null ? N_A : new IdNamePair { id = i, name = v }).Skip(1).ToArray();
+            Switches = sf.switches.Select((v, i) => v == null ? N_A : new IdNamePair { id = i, name = v }).Skip(1).ToArray();
+            IconSetFile=App.Path + "img/system/IconSet.png";
+            IconSet = new BitmapImage(new Uri(IconSetFile));
         }
 
         public static IdNamePair[] GetItems(object value) {
@@ -94,5 +99,19 @@ namespace MG_GameusQuestEditor {
             return 0;
         }
 
+        public static void Save(){
+            
+            LinkedList<object> o = new LinkedList<object>();
+            o.AddLast(Data.Category.Select(s => s.Name).ToArray());
+            foreach (var e in Data.Quests) o.AddLast(e.Update());
+            Backup();
+            File.WriteAllText(App.Path + "data/Quests.json", jss.Serialize(o));
+        }
+
+        public static void Backup() {
+            if (!File.Exists(App.Path + "BackupData")) Directory.CreateDirectory(App.Path + "BackupData");
+            string o = App.Path + "BackupData/Quests.bak." + DateTime.Now.ToString("yyyyMMddhhmmssfff") + ".json";
+            if (!File.Exists(o)) File.Copy(App.Path + "data/Quests.json", o);
+        }
     }
 }
