@@ -26,7 +26,7 @@ namespace MG_GameusQuestEditor {
         gold,
         custom,
         variable,
-        Switch
+        //Switch
         //kill,
     }
 
@@ -109,6 +109,7 @@ namespace MG_GameusQuestEditor {
         public bool hidden { get { return _hidden; } set { this._hidden = value; _PC("hidden"); } }
         private bool _hidden = false;
 
+        public String code { get { return _code; } set { _code = value; _PC("code"); } } private String _code = "";
 
         /////////////////////////////////////////////////
 
@@ -133,6 +134,7 @@ namespace MG_GameusQuestEditor {
         public String desc { get { return _desc; } set { this._desc = value; _PC("desc"); } }
         private String _desc = "<Description>";
 
+        public bool autoComplete { get { return _autoComplete; } set { _autoComplete = value; _PC("autoComplete"); } } private bool _autoComplete = default(bool);
         
         [ScriptIgnore]
         public String DisplayName { get { return String.Format("{0:0000}: {1}", id, name); } }

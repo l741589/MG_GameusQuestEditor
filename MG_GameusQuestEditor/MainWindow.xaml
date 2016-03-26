@@ -67,9 +67,13 @@
                 </GroupBox>
             </UniformGrid>
             <UniformGrid  Columns="1"  Rows="3" Grid.Column="1" DataContext="{Binding SelectedValue, ElementName=listBox, Mode=OneWay}" >
-                <GroupBox Padding="4">
+                <GroupBox x:Name="groupBox" Padding="4">
                     <GroupBox.Header>
-                        <TextBlock FontSize="16"><Run Text="Quest Info"/></TextBlock>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock FontSize="16"><Run Text="Quest Info"/></TextBlock>
+                            <Line Width="64" Fill="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" Height="1" Stroke="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"></Line>
+                            <CheckBox VerticalAlignment="Bottom" IsChecked="{Binding autoComplete}" DataContext="{Binding DataContext, ElementName=groupBox}">AutoComplete</CheckBox>
+                        </StackPanel>
                     </GroupBox.Header>
                     <Grid>
                         <Grid.RowDefinitions>
@@ -157,7 +161,8 @@
                                 </DataGridTextColumn>
                                 <DataGridTextColumn Header="Amount" Binding="{Binding amount}" CanUserSort="False"/>
                                 <DataGridTextColumn Header="Desc" Binding="{Binding desc,Converter={StaticResource strEscCvt}}" CanUserSort="False"/>
-                                <DataGridTextColumn Header="Hidden" Binding="{Binding hidden}" CanUserSort="False"/>
+                                <DataGridTextColumn Header="Code" Binding="{Binding code}" CanUserSort="False"/>
+                                <DataGridTextColumn Header="Hidden" Binding="{Binding hidden}" CanUserSort="False"/>                                
                             </DataGrid.Columns>
                         </DataGrid>
                     </DockPanel>
